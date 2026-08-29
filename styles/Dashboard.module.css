@@ -31,6 +31,35 @@
   margin-bottom: 24px;
 }
 
+.bioGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  text-align: left;
+  background: #f7f7f9;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 24px;
+}
+
+.bioGrid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bioFull {
+  grid-column: span 2;
+}
+
+.bioLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .card button {
   padding: 12px 32px;
   border: none;
@@ -40,182 +69,4 @@
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 1px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.card button:hover {
-  background: #253556;
-  transform: translateY(-2px);
-}
-
-
-/* ========================================
-   LOGOUT MODAL
-======================================== */
-
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(5px);
-
-  z-index: 999;
-
-  animation: overlayFade 0.2s ease forwards;
-}
-
-.modal {
-  width: 420px;
-  max-width: calc(100% - 40px);
-
-  padding: 32px;
-
-  background: #fff;
-  border-radius: 20px;
-
-  text-align: center;
-
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-
-  animation: modalPop 0.25s ease forwards;
-}
-
-.modalIcon {
-  width: 55px;
-  height: 55px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin: 0 auto 16px;
-
-  border-radius: 50%;
-
-  background: #fff7ed;
-
-  font-size: 25px;
-}
-
-.modal h2 {
-  margin: 0 0 10px;
-
-  font-size: 22px;
-  color: #16213a;
-}
-
-.modal p {
-  margin: 0 auto 25px;
-
-  max-width: 330px;
-
-  color: #666;
-
-  line-height: 1.5;
-}
-
-
-/* ========================================
-   MODAL BUTTONS
-======================================== */
-
-.modalActions {
-  display: flex;
-  gap: 12px;
-}
-
-.cancelButton,
-.confirmButton {
-  flex: 1;
-
-  padding: 12px 18px;
-
-  border: none;
-  border-radius: 10px;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.1s ease;
-}
-
-.cancelButton {
-  background: #fff;
-  border: solid 1px #16213a;
-  color: #333;
-}
-
-.cancelButton:hover {
-  background: #16213a;
-  color: #fff;
-}
-
-.confirmButton {
-  background: #ef4444;
-  color: #fff;
-}
-
-.confirmButton:hover {
-  background: #ff0000;
-}
-
-.cancelButton:disabled,
-.confirmButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-
-/* ========================================
-   ANIMATION
-======================================== */
-
-@keyframes overlayFade {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes modalPop {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-
-/* ========================================
-   MOBILE
-======================================== */
-
-@media (max-width: 480px) {
-  .modal {
-    padding: 25px 20px;
-  }
-
-  .modalActions {
-    flex-direction: column-reverse;
-  }
-
-  .cancelButton,
-  .confirmButton {
-    width: 100%;
-  }
 }

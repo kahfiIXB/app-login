@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-
 import styles from "../styles/Auth.module.css";
 
 export default function AuthPage() {
   const router = useRouter();
-
-  const [isLogin, setIsLogin] = useState(true);
+  const [rightPanelActive, setRightPanelActive] = useState(false); // false = login shown, true = sign up shown
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
     fullName: "",
     email: "",
@@ -22,42 +16,23 @@ export default function AuthPage() {
   });
 
   useEffect(() => {
-    if (router.query.mode === "register") {
-      setIsLogin(false);
-    }
-
-    if (router.query.mode === "login") {
-      setIsLogin(true);
-    }
+    if (router.query.mode === "register") setRightPanelActive(true);
+    if (router.query.mode === "login") setRightPanelActive(false);
   }, [router.query.mode]);
-
-  function switchMode(login) {
-    setError("");
-    setIsLogin(login);
-  }
 
   async function handleLogin(e) {
     e.preventDefault();
-
     setError("");
     setLoading(true);
-
     try {
       const res = await fetch("/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginForm),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Login failed");
-      }
-
-      router.push("/dashboard");
+      if (!res.ok) throw new Error(data.message);
+      router.push(data.user.biodataCompleted ? "/dashboard" : "/biodata");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -67,26 +42,17 @@ export default function AuthPage() {
 
   async function handleRegister(e) {
     e.preventDefault();
-
     setError("");
     setLoading(true);
-
     try {
       const res = await fetch("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(registerForm),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
-
-      router.push("/dashboard");
+      if (!res.ok) throw new Error(data.message);
+      router.push("/biodata"); // user baru selalu isi biodata dulu
     } catch (err) {
       setError(err.message);
     } finally {
@@ -97,156 +63,114 @@ export default function AuthPage() {
   return (
     <div className={styles.page}>
       <div
-        className={`${styles.card} ${
-          !isLogin ? styles.signUpMode : ""
+        className={`${styles.container} ${
+          rightPanelActive ? styles.rightPanelActive : ""
         }`}
       >
-        {/* =================================
-            FORM SIDE
-        ================================= */}
-
-        <div className={styles.formsSide}>
-          {/* LOGIN FORM */}
-
-          <form
-            className={`${styles.form} ${styles.loginForm}`}
-            onSubmit={handleLogin}
-          >
-            <h2>Login</h2>
-
-            <input
-              type="email"
-              placeholder="Email"
-              required
-              value={loginForm.email}
-              onChange={(e) =>
-                setLoginForm({
-                  ...loginForm,
-                  email: e.target.value,
-                })
-              }
-            />
-
-            <input
-              type="password"
-              placeholder="Password"
-              required
-              value={loginForm.password}
-              onChange={(e) =>
-                setLoginForm({
-                  ...loginForm,
-                  password: e.target.value,
-                })
-              }
-            />
-
-            {error && isLogin && (
-              <p className={styles.error}>{error}</p>
-            )}
-
-            <button type="submit" disabled={loading}>
-              {loading ? "..." : "LOGIN"}
-            </button>
-          </form>
-
-          {/* SIGN UP FORM */}
-
-          <form
-            className={`${styles.form} ${styles.registerForm}`}
-            onSubmit={handleRegister}
-          >
+        {/* SIGN UP FORM */}
+        <div className={`${styles.formContainer} ${styles.signUpContainer}`}>
+          <form className={styles.form} onSubmit={handleRegister}>
             <h2>Sign Up</h2>
-
             <input
               type="text"
               placeholder="Full name"
               required
               value={registerForm.fullName}
               onChange={(e) =>
-                setRegisterForm({
-                  ...registerForm,
-                  fullName: e.target.value,
-                })
+                setRegisterForm({ ...registerForm, fullName: e.target.value })
               }
             />
-
             <input
               type="email"
               placeholder="Email address"
               required
               value={registerForm.email}
               onChange={(e) =>
-                setRegisterForm({
-                  ...registerForm,
-                  email: e.target.value,
-                })
+                setRegisterForm({ ...registerForm, email: e.target.value })
               }
             />
-
             <input
               type="password"
               placeholder="Password"
               required
               value={registerForm.password}
               onChange={(e) =>
-                setRegisterForm({
-                  ...registerForm,
-                  password: e.target.value,
-                })
+                setRegisterForm({ ...registerForm, password: e.target.value })
               }
             />
-
-            {error && !isLogin && (
+            {rightPanelActive && error && (
               <p className={styles.error}>{error}</p>
             )}
-
             <button type="submit" disabled={loading}>
               {loading ? "..." : "SIGN UP"}
             </button>
           </form>
         </div>
 
-        {/* =================================
-            PANEL SIDE
-        ================================= */}
+        {/* LOGIN FORM */}
+        <div className={`${styles.formContainer} ${styles.signInContainer}`}>
+          <form className={styles.form} onSubmit={handleLogin}>
+            <h2>Login</h2>
+            <input
+              type="email"
+              placeholder="Email"
+              required
+              value={loginForm.email}
+              onChange={(e) =>
+                setLoginForm({ ...loginForm, email: e.target.value })
+              }
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              value={loginForm.password}
+              onChange={(e) =>
+                setLoginForm({ ...loginForm, password: e.target.value })
+              }
+            />
+            {!rightPanelActive && error && (
+              <p className={styles.error}>{error}</p>
+            )}
+            <button type="submit" disabled={loading}>
+              {loading ? "..." : "LOGIN"}
+            </button>
+          </form>
+        </div>
 
-        <div className={styles.panelsSide}>
-          <div className={styles.panel}>
-            <div className={styles.panelContent}>
-              {isLogin ? (
-                <>
-                  <h3>Hello there</h3>
-
-                  <p>
-                    Begin your journey using this app, and start
-                    managing your account now.
-                  </p>
-
-                  <button
-                    className={styles.ghostBtn}
-                    onClick={() => switchMode(false)}
-                    type="button"
-                  >
-                    SIGN UP
-                  </button>
-                </>
-              ) : (
-                <>
-                  <h3>Welcome back</h3>
-
-                  <p>
-                    Login to access your account and continue.
-                  </p>
-
-                  <button
-                    className={styles.ghostBtn}
-                    onClick={() => switchMode(true)}
-                    type="button"
-                  >
-                    LOGIN
-                  </button>
-                </>
-              )}
+        {/* SLIDING OVERLAY */}
+        <div className={styles.overlayContainer}>
+          <div className={styles.overlay}>
+            <div className={`${styles.overlayPanel} ${styles.overlayLeft}`}>
+              <h3>Welcome back</h3>
+              <p>Login to access your account and continue.</p>
+              <button
+                className={styles.ghostBtn}
+                type="button"
+                onClick={() => {
+                  setError("");
+                  setRightPanelActive(false);
+                }}
+              >
+                LOGIN
+              </button>
+            </div>
+            <div className={`${styles.overlayPanel} ${styles.overlayRight}`}>
+              <h3>Hello there</h3>
+              <p>
+                Begin your journey using this app, and start managing your
+                account now.
+              </p>
+              <button
+                className={styles.ghostBtn}
+                type="button"
+                onClick={() => {
+                  setError("");
+                  setRightPanelActive(true);
+                }}
+              >
+                SIGN UP
+              </button>
             </div>
           </div>
         </div>

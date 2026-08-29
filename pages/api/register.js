@@ -41,7 +41,12 @@ export default async function handler(req, res) {
 
     return res.status(201).json({
       message: "Registrasi berhasil",
-      user: { id: result.insertId, email, fullName },
+      user: {
+        id: result.insertId,
+        email,
+        fullName,
+        biodataCompleted: false, // user baru selalu belum isi biodata
+      },
     });
   } catch (err) {
     console.error(err);

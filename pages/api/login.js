@@ -15,12 +15,15 @@ export default async function handler(req, res) {
 
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM users WHERE email = ?",
+      `SELECT u.*, b.phone AS biodata_phone
+       FROM users u
+       LEFT JOIN biodata b ON b.user_id = u.id
+       WHERE u.email = ?`,
       [email]
     );
 
     if (rows.length === 0) {
-      return res.status(401).json({ message: "Email belum terdaftar" });
+      return res.status(401).json({ message: "Email atau password salah" });
     }
 
     const user = rows[0];
@@ -39,7 +42,12 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       message: "Login berhasil",
-      user: { id: user.id, email: user.email, fullName: user.full_name },
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.full_name,
+        biodataCompleted: user.biodata_phone !== null, // true kalau sudah ada baris di tabel biodata
+      },
     });
   } catch (err) {
     console.error(err);

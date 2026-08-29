@@ -1,3 +1,4 @@
+
 /* ========================================
    PAGE
 ======================================== */
@@ -6,34 +7,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: #f0f0f3;
   padding: 20px;
 }
 
 
 /* ========================================
-   CARD
+   CONTAINER / CARD
 ======================================== */
-.card {
+.container {
   position: relative;
+
   width: 750px;
   max-width: 100%;
-  min-height: 460px;
+  min-height: 480px;
+
   background: #fff;
+
   border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.12);
+
   overflow: hidden;
 }
 
 
 /* ========================================
-   FORM SIDE
+   FORM CONTAINERS
 ======================================== */
-.formsSide {
+.formContainer {
   position: absolute;
+
   top: 0;
   left: 0;
-  width: 55%;
+
+  width: 50%;
   height: 100%;
 
   display: flex;
@@ -41,13 +51,123 @@
   justify-content: center;
 
   padding: 40px;
+
   box-sizing: border-box;
 
+  will-change: transform, opacity;
+}
+
+
+/* ========================================
+   LOGIN FORM
+======================================== */
+.signInContainer {
   z-index: 2;
 
-  transition: transform 0.85s cubic-bezier(0.65, 0, 0.35, 1);
+  transform: translateX(0);
 
-  will-change: transform;
+  opacity: 1;
+
+  pointer-events: auto;
+
+  transition:
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1),
+    opacity 0.28s ease;
+}
+
+
+/* ========================================
+   SIGN UP FORM
+======================================== */
+.signUpContainer {
+  z-index: 1;
+
+  transform: translateX(0);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1),
+    opacity 0.28s ease;
+}
+
+
+/* ========================================
+   LOGIN → SIGN UP
+======================================== */
+
+/* LOGIN KELUAR */
+.container.rightPanelActive .signInContainer {
+  transform: translateX(100%);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1) 0s,
+    opacity 0.28s ease 0s;
+}
+
+
+/* SIGN UP MASUK */
+.container.rightPanelActive .signUpContainer {
+  transform: translateX(100%);
+
+  opacity: 1;
+
+  pointer-events: auto;
+
+  transition:
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1) 0s,
+    opacity 0.28s ease 0.24s;
+}
+
+
+/* ========================================
+   SIGN UP → LOGIN
+======================================== */
+
+/*
+   SIGN UP:
+
+   Fade OUT lebih dulu.
+   Transform ditunda sampai fade selesai.
+
+   Dengan begini Sign Up tidak sempat
+   terlihat ketika Login mulai masuk.
+*/
+.container:not(.rightPanelActive) .signUpContainer {
+  transform: translateX(0);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1) 0.30s,
+    opacity 0.24s ease 0s;
+}
+
+
+/*
+   LOGIN:
+
+   Fade masuk sedikit setelah transisi
+   dimulai supaya tidak "nyelonong".
+*/
+.container:not(.rightPanelActive) .signInContainer {
+  transform: translateX(0);
+
+  opacity: 1;
+
+  pointer-events: auto;
+
+  transition:
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1) 0s,
+    opacity 0.28s ease 0.20s;
 }
 
 
@@ -55,140 +175,34 @@
    FORM
 ======================================== */
 .form {
-  position: absolute;
-
-  width: calc(100% - 80px);
+  width: 100%;
   max-width: 320px;
 
   display: flex;
   flex-direction: column;
+
   gap: 14px;
-
-  box-sizing: border-box;
-
-  /*
-    Animasi utama form
-  */
-  opacity: 0;
-  transform: translate3d(12px, 0, 0);
-  filter: blur(3px);
-
-  transition:
-    opacity 0.5s ease,
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.5s ease;
-
-  will-change:
-    opacity,
-    transform,
-    filter;
 }
 
 
 /* ========================================
-   LOGIN DEFAULT
-======================================== */
-.loginForm {
-  opacity: 1;
-
-  transform: translate3d(0, 0, 0);
-
-  filter: blur(0);
-
-  pointer-events: auto;
-
-  z-index: 2;
-
-  /*
-    Login langsung tampil
-  */
-  transition-delay: 0.45s;
-}
-
-
-/* ========================================
-   REGISTER DEFAULT
-======================================== */
-.registerForm {
-  opacity: 0;
-
-  transform: translate3d(12px, 0, 0);
-
-  filter: blur(3px);
-
-  pointer-events: none;
-
-  z-index: 1;
-
-  transition-delay: 0s;
-}
-
-
-/* ========================================
-   SIGN UP MODE
-======================================== */
-
-/*
-  FORM SIDE BERGERAK KE KANAN
-*/
-.signUpMode .formsSide {
-  transform: translate3d(81.82%, 0, 0);
-}
-
-
-/* ========================================
-   LOGIN KELUAR
-======================================== */
-.signUpMode .loginForm {
-  opacity: 0;
-
-  transform: translate3d(-12px, 0, 0);
-
-  filter: blur(3px);
-
-  pointer-events: none;
-
-  z-index: 1;
-
-  /*
-    Login mulai menghilang sedikit lebih cepat
-  */
-  transition-delay: 0s;
-}
-
-
-/* ========================================
-   REGISTER MASUK
-======================================== */
-.signUpMode .registerForm {
-  opacity: 1;
-
-  transform: translate3d(0, 0, 0);
-
-  filter: blur(0);
-
-  pointer-events: auto;
-
-  z-index: 2;
-
-  /*
-    Register muncul setelah panel mulai bergerak
-  */
-  transition-delay: 0.45s;
-}
-
-
-/* ========================================
-   FORM STYLE
+   FORM TITLE
 ======================================== */
 .form h2 {
   font-size: 26px;
+
   margin: 0 0 8px;
+
   text-align: center;
 }
 
+
+/* ========================================
+   INPUT
+======================================== */
 .form input {
   width: 100%;
+
   padding: 13px 16px;
 
   border: none;
@@ -204,17 +218,19 @@
   box-sizing: border-box;
 
   transition:
-    background 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
+
 .form input:focus {
-  box-shadow: 0 0 0 2px #16213a33;
+  box-shadow:
+    0 0 0 2px #16213a33;
 }
 
 
 /* ========================================
-   FORM BUTTON
+   BUTTON
 ======================================== */
 .form button {
   margin-top: 8px;
@@ -235,20 +251,23 @@
 
   font-size: 13px;
 
+  cursor: pointer;
+
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
-
-  cursor: pointer;
 }
+
 
 .form button:hover {
   opacity: 0.9;
 }
 
+
 .form button:active {
   transform: scale(0.98);
 }
+
 
 .form button:disabled {
   opacity: 0.6;
@@ -271,15 +290,45 @@
 
 
 /* ========================================
-   PANEL SIDE
+   OVERLAY CONTAINER
 ======================================== */
-.panelsSide {
+.overlayContainer {
   position: absolute;
 
   top: 0;
-  left: 55%;
+  left: 50%;
 
-  width: 45%;
+  width: 50%;
+  height: 100%;
+
+  overflow: hidden;
+
+  z-index: 100;
+
+  transition:
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1);
+
+  will-change: transform;
+}
+
+
+/* ========================================
+   OVERLAY → KIRI
+======================================== */
+.container.rightPanelActive .overlayContainer {
+  transform: translateX(-100%);
+}
+
+
+/* ========================================
+   OVERLAY
+======================================== */
+.overlay {
+  position: relative;
+
+  left: -100%;
+
+  width: 200%;
   height: 100%;
 
   background:
@@ -290,118 +339,150 @@
       #0c1220 100%
     );
 
-  z-index: 5;
+  color: #fff;
 
-  overflow: hidden;
+  transform: translateX(0);
 
   transition:
-    transform 0.85s cubic-bezier(0.65, 0, 0.35, 1);
+    transform 0.60s cubic-bezier(0.30, 1, 0.50, 1);
 
   will-change: transform;
 }
 
 
 /* ========================================
-   PANEL POSITION
+   OVERLAY INTERNAL MOVE
 ======================================== */
-.panelsSide {
-  transform: translate3d(0, 0, 0);
-}
-
-.signUpMode .panelsSide {
-  transform: translate3d(-122.22%, 0, 0);
+.container.rightPanelActive .overlay {
+  transform: translateX(50%);
 }
 
 
 /* ========================================
-   PANEL
+   OVERLAY PANEL
 ======================================== */
-.panel {
+.overlayPanel {
   position: absolute;
 
-  inset: 0;
+  top: 0;
+
+  width: 50%;
+  height: 100%;
 
   display: flex;
+
+  flex-direction: column;
 
   align-items: center;
   justify-content: center;
 
-  padding: 40px;
-
-  box-sizing: border-box;
-}
-
-
-/* ========================================
-   PANEL CONTENT
-======================================== */
-.panelContent {
-  max-width: 280px;
-
   text-align: center;
 
-  color: #fff;
+  padding: 0 40px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 14px;
-
-  /*
-    Jangan pakai animation di sini saja.
-    Kita pakai transition supaya kedua panel
-    bisa dikontrol ketika mode berubah.
-  */
-  opacity: 1;
-
-  transform: translate3d(0, 0, 0);
-
-  filter: blur(0);
+  box-sizing: border-box;
 
   transition:
-    opacity 0.55s ease,
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.5s ease;
+    opacity 0.30s ease,
+    transform 0.52s cubic-bezier(0.30, 1, 0.50, 1);
+
+  will-change:
+    opacity,
+    transform;
 }
 
 
 /* ========================================
-   PANEL FADE STATE
+   WELCOME BACK
 ======================================== */
+.overlayLeft {
+  left: 0;
 
-/*
-  Kalau panel content punya class tertentu
-  untuk hide, bisa menggunakan ini.
-*/
-.panelContent.hidden {
   opacity: 0;
 
-  transform: translate3d(0, 8px, 0);
-
-  filter: blur(3px);
+  transform: translateX(-12px);
 
   pointer-events: none;
+
+  transition:
+    opacity 0.30s ease 0s,
+    transform 0.52s cubic-bezier(0.30, 1, 0.50, 1) 0s;
 }
 
 
 /* ========================================
-   PANEL TEXT
+   WELCOME BACK → SHOW
 ======================================== */
-.panelContent h3 {
-  font-size: 26px;
+.container.rightPanelActive .overlayLeft {
+  opacity: 1;
 
-  margin: 0;
+  transform: translateX(0);
+
+  pointer-events: auto;
+
+  transition:
+    opacity 0.30s ease 0.20s,
+    transform 0.52s cubic-bezier(0.30, 1, 0.50, 1) 0.10s;
 }
 
-.panelContent p {
+
+/* ========================================
+   HELLO THERE
+======================================== */
+.overlayRight {
+  right: 0;
+
+  opacity: 1;
+
+  transform: translateX(0);
+
+  pointer-events: auto;
+
+  transition:
+    opacity 0.30s ease 0s,
+    transform 0.52s cubic-bezier(0.30, 1, 0.50, 1) 0s;
+}
+
+
+/* ========================================
+   HELLO THERE → HIDE
+======================================== */
+.container.rightPanelActive .overlayRight {
+  opacity: 0;
+
+  transform: translateX(12px);
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.30s ease 0s,
+    transform 0.52s cubic-bezier(0.30, 1, 0.50, 1) 0s;
+}
+
+
+/* ========================================
+   OVERLAY TITLE
+======================================== */
+.overlayPanel h3 {
+  font-size: 26px;
+
+  margin: 0 0 6px;
+}
+
+
+/* ========================================
+   OVERLAY TEXT
+======================================== */
+.overlayPanel p {
   font-size: 14px;
 
   line-height: 1.6;
 
   color: #d8dce5;
 
-  margin: 0;
+  margin: 0 0 14px;
+
+  max-width: 280px;
 }
 
 
@@ -409,8 +490,6 @@
    GHOST BUTTON
 ======================================== */
 .ghostBtn {
-  margin-top: 10px;
-
   padding: 12px 34px;
 
   border: 1.5px solid #fff;
@@ -427,19 +506,20 @@
 
   letter-spacing: 1px;
 
+  cursor: pointer;
+
   transition:
     background 0.2s ease,
     color 0.2s ease,
     transform 0.2s ease;
-
-  cursor: pointer;
 }
+
 
 .ghostBtn:hover {
   background: #fff;
-
   color: #16213a;
 }
+
 
 .ghostBtn:active {
   transform: scale(0.96);
@@ -459,130 +539,145 @@
   /* ======================================
      CARD
   ====================================== */
-  .card {
+  .container {
     width: 100%;
 
-    min-height: 560px;
+    min-height: 640px;
 
     border-radius: 16px;
   }
 
 
   /* ======================================
-     FORM SIDE
+     FORM CONTAINER
   ====================================== */
-  .formsSide {
+  .formContainer {
     top: 35%;
 
     left: 0;
 
     width: 100%;
+
     height: 65%;
 
     padding: 32px;
 
-    transform: none !important;
-
-    transition: none;
-  }
-
-
-  /* ======================================
-     FORM
-  ====================================== */
-  .form {
-    width: calc(100% - 64px);
-
-    max-width: 360px;
-
-    transition:
-      opacity 0.45s ease,
-      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.45s ease;
+    will-change: transform, opacity;
   }
 
 
   /* ======================================
      LOGIN
   ====================================== */
-  .loginForm {
+  .signInContainer {
+    z-index: 2;
+
+    transform: translateX(0);
+
     opacity: 1;
-
-    transform: translate3d(0, 0, 0);
-
-    filter: blur(0);
 
     pointer-events: auto;
 
-    transition-delay: 0.3s;
+    transition:
+      transform 0.54s cubic-bezier(0.30, 1, 0.50, 1),
+      opacity 0.26s ease;
   }
 
 
   /* ======================================
-     REGISTER
+     SIGN UP
   ====================================== */
-  .registerForm {
+  .signUpContainer {
+    z-index: 1;
+
+    transform: translateX(20px);
+
     opacity: 0;
-
-    transform: translate3d(10px, 0, 0);
-
-    filter: blur(3px);
 
     pointer-events: none;
 
-    transition-delay: 0s;
+    transition:
+      transform 0.54s cubic-bezier(0.30, 1, 0.50, 1),
+      opacity 0.26s ease;
   }
 
 
   /* ======================================
-     SIGN UP MODE
+     LOGIN → SIGN UP
   ====================================== */
-  .signUpMode .formsSide {
-    transform: none !important;
-  }
+  .container.rightPanelActive .signInContainer {
+    transform: translateX(-20px);
 
-
-  /* ======================================
-     LOGIN KELUAR
-  ====================================== */
-  .signUpMode .loginForm {
     opacity: 0;
-
-    transform: translate3d(-10px, 0, 0);
-
-    filter: blur(3px);
 
     pointer-events: none;
 
-    transition-delay: 0s;
+    transition:
+      transform 0.54s cubic-bezier(0.30, 1, 0.50, 1) 0s,
+      opacity 0.26s ease 0s;
   }
 
 
-  /* ======================================
-     REGISTER MASUK
-  ====================================== */
-  .signUpMode .registerForm {
+  .container.rightPanelActive .signUpContainer {
+    transform: translateX(0);
+
     opacity: 1;
-
-    transform: translate3d(0, 0, 0);
-
-    filter: blur(0);
 
     pointer-events: auto;
 
-    transition-delay: 0.3s;
+    transition:
+      transform 0.54s cubic-bezier(0.30, 1, 0.50, 1) 0s,
+      opacity 0.26s ease 0.18s;
   }
 
 
   /* ======================================
-     PANEL
+     SIGN UP → LOGIN
   ====================================== */
-  .panelsSide {
+
+  /*
+     Sign Up fade out dulu.
+     Transform balik ditunda.
+  */
+  .container:not(.rightPanelActive) .signUpContainer {
+    transform: translateX(20px);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+      transform 0.54s cubic-bezier(0.30, 1, 0.50, 1) 0.26s,
+      opacity 0.22s ease 0s;
+  }
+
+
+  /*
+     Login fade masuk setelah sedikit delay.
+  */
+  .container:not(.rightPanelActive) .signInContainer {
+    transform: translateX(0);
+
+    opacity: 1;
+
+    pointer-events: auto;
+
+    transition:
+      transform 0.54s cubic-bezier(0.30, 1, 0.50, 1) 0s,
+      opacity 0.26s ease 0.18s;
+  }
+
+
+  /* ======================================
+     OVERLAY CONTAINER
+  ====================================== */
+  .overlayContainer {
     top: 0;
 
     left: 0;
 
     width: 100%;
+
     height: 35%;
 
     transform: none !important;
@@ -590,46 +685,136 @@
     transition: none;
   }
 
-  .signUpMode .panelsSide {
+
+  /* ======================================
+     OVERLAY
+  ====================================== */
+  .overlay {
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
     transform: none !important;
+
+    transition: none;
   }
 
 
   /* ======================================
-     PANEL CONTENT
+     OVERLAY PANEL
   ====================================== */
-  .panel {
+  .overlayPanel {
+    width: 100%;
+
+    height: 100%;
+
     padding: 24px;
-  }
-
-  .panelContent {
-    max-width: 300px;
-
-    gap: 8px;
 
     transition:
-      opacity 0.45s ease,
-      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.4s ease;
+      opacity 0.28s ease,
+      transform 0.44s cubic-bezier(0.30, 1, 0.50, 1);
   }
 
-  .panelContent h3 {
+
+  /* ======================================
+     LEFT PANEL
+  ====================================== */
+  .overlayLeft {
+    left: 0;
+
+    opacity: 0;
+
+    transform: translateX(-10px);
+
+    pointer-events: none;
+
+    transition:
+      opacity 0.28s ease 0s,
+      transform 0.44s cubic-bezier(0.30, 1, 0.50, 1) 0s;
+  }
+
+
+  /* ======================================
+     RIGHT PANEL
+  ====================================== */
+  .overlayRight {
+    right: auto;
+
+    left: 0;
+
+    opacity: 1;
+
+    transform: translateX(0);
+
+    pointer-events: auto;
+
+    transition:
+      opacity 0.28s ease 0s,
+      transform 0.44s cubic-bezier(0.30, 1, 0.50, 1) 0s;
+  }
+
+
+  /* ======================================
+     LEFT SHOW
+  ====================================== */
+  .container.rightPanelActive .overlayLeft {
+    opacity: 1;
+
+    transform: translateX(0);
+
+    pointer-events: auto;
+
+    transition:
+      opacity 0.28s ease 0.16s,
+      transform 0.44s cubic-bezier(0.30, 1, 0.50, 1) 0.08s;
+  }
+
+
+  /* ======================================
+     RIGHT HIDE
+  ====================================== */
+  .container.rightPanelActive .overlayRight {
+    opacity: 0;
+
+    transform: translateX(10px);
+
+    pointer-events: none;
+
+    transition:
+      opacity 0.28s ease 0s,
+      transform 0.44s cubic-bezier(0.30, 1, 0.50, 1) 0s;
+  }
+
+
+  /* ======================================
+     TEXT
+  ====================================== */
+  .overlayPanel h3 {
     font-size: 22px;
   }
 
-  .panelContent p {
+
+  .overlayPanel p {
     font-size: 13px;
+
+    line-height: 1.5;
+
+    margin-bottom: 8px;
   }
 
-  .ghostBtn {
-    margin-top: 4px;
 
+  /* ======================================
+     GHOST BUTTON
+  ====================================== */
+  .ghostBtn {
     padding: 10px 28px;
   }
 
 
   /* ======================================
-     FORM TEXT
+     FORM TITLE
   ====================================== */
   .form h2 {
     font-size: 24px;
