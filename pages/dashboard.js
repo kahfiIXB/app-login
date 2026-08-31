@@ -82,6 +82,10 @@ export default function Dashboard() {
           </div>
         </div>
 
+        <button onClick={() => router.push("/biodata")}>
+            Edit Biodata
+          </button>
+
         <button onClick={() => setShowLogoutModal(true)}>
           Logout
         </button>

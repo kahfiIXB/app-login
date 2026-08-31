@@ -7,6 +7,7 @@ export default function BiodataPage() {
   const [checking, setChecking] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   const [form, setForm] = useState({
     phone: "",
@@ -23,12 +24,22 @@ export default function BiodataPage() {
       .then((data) => {
         if (!data.user) {
           router.push("/auth?mode=login");
-        } else if (data.user.biodataCompleted) {
-          // sudah pernah isi biodata, langsung ke dashboard
-          router.push("/dashboard");
-        } else {
-          setChecking(false);
+          return;
         }
+
+        if (data.user.biodataCompleted) {
+          setIsEditing(true);
+          setForm({
+            phone: data.user.phone || "",
+            address: data.user.address || "",
+            birthDate: data.user.birthDate || "",
+            gender: data.user.gender || "",
+            kelas: data.user.kelas || "",
+            jurusan: data.user.jurusan || "",
+          });
+        }
+
+        setChecking(false);
       });
   }, [router]);
 
@@ -63,9 +74,11 @@ export default function BiodataPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h1>Lengkapi Biodata</h1>
+        <h1>{isEditing ? "Edit Biodata" : "Lengkapi Biodata"}</h1>
         <p className={styles.subtitle}>
-          Isi data diri kamu dulu ya, cuma perlu sekali aja kok.
+          {isEditing
+            ? "Ubah data diri kamu di bawah ini."
+            : "Isi data diri kamu dulu ya, cuma perlu sekali aja kok."}
         </p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -143,8 +156,22 @@ export default function BiodataPage() {
           {error && <p className={styles.error}>{error}</p>}
 
           <button type="submit" disabled={loading}>
-            {loading ? "Menyimpan..." : "SIMPAN & LANJUT"}
+            {loading
+              ? "Menyimpan..."
+              : isEditing
+              ? "SIMPAN PERUBAHAN"
+              : "SIMPAN & LANJUT"}
           </button>
+
+          {isEditing && (
+            <button
+              type="button"
+              className={styles.cancelBtn}
+              onClick={() => router.push("/dashboard")}
+            >
+              Batal
+            </button>
+          )}
         </form>
       </div>
     </div>

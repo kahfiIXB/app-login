@@ -23,8 +23,13 @@ export default async function handler(req, res) {
     }
 
     const row = rows[0];
-    // biodataCompleted = true kalau ada baris di tabel biodata (b.phone tidak null)
     const biodataCompleted = row.phone !== null;
+
+    let birthDate = null;
+    if (row.birth_date) {
+      const d = new Date(row.birth_date);
+      birthDate = d.toISOString().slice(0, 10);
+    }
 
     return res.status(200).json({
       user: {
@@ -33,7 +38,7 @@ export default async function handler(req, res) {
         email: row.email,
         phone: row.phone,
         address: row.address,
-        birthDate: row.birth_date,
+        birthDate,
         gender: row.gender,
         kelas: row.kelas,
         jurusan: row.jurusan,
