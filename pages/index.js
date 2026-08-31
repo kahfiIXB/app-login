@@ -17,7 +17,7 @@ export default function Home() {
       </nav>
 
       <main className={styles.hero}>
-        <h1>Selamat Datang di MyApp</h1>
+        <h1>Selamat Datang di my Login Gweh</h1>
         <p>
           Landing page sederhana dengan sistem register &amp; login,
           terhubung ke database MySQL lewat Laragon.
