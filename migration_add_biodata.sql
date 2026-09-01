@@ -2,8 +2,7 @@ USE auth_app;
 
 -- Bikin tabel biodata terpisah
 CREATE TABLE IF NOT EXISTS biodata (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL UNIQUE,
+  user_id INT PRIMARY KEY,
   phone VARCHAR(20) NOT NULL,
   address TEXT NOT NULL,
   birth_date DATE NOT NULL,
